@@ -1,5 +1,13 @@
-export { default as grassImg } from './grass.jpg'
-export { default as dirtImg } from './dirt.jpg'
-export { default as logImg } from './log.jpg'
-export { default as glassImg } from './glass.png'
-export { default as woodImg } from './wood.png'
+import dirtImg from './dirt.jpg'
+import grassImg from './grass.jpg'
+import glassImg from './glass.png'
+import woodImg from './wood.png'
+import logImg from './log.jpg'
+
+export {
+  dirtImg,
+  grassImg,
+  glassImg,
+  woodImg,
+  logImg
+}

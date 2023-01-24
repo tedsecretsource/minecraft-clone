@@ -1,67 +1,64 @@
 import { useStore } from '../hooks/useStore'
 import { useEffect, useState } from 'react' 
-import * as images from '../images/images'
+import { dirtImg, grassImg, glassImg, logImg, woodImg } from '../images/images'
 import { useKeyboard } from '../hooks/useKeyboard'
+
+const images = {
+  dirt: dirtImg,
+  grass: grassImg,
+  glass: glassImg,
+  wood: woodImg,
+  log: logImg,
+}
 
 export const TextureSelector = () => {
   const [visible, setVisible] = useState(true)
-  const [texture, setTexture] = useStore(state => [state.texture, state.setTexture])
+  const [activeTexture, setTexture] = useStore(state => [state.texture, state.setTexture])
+  const { dirt, grass, glass, wood, log } = useKeyboard()
 
-  const {
-    dirt,
-    grass,
-    glass,
-    wood,
-    log
-  } = useKeyboard()
-
+  
   useEffect(() => {
-    const visibilityTimeout = setTimeout(() => {
-      setVisible(false)
-    }, 1000)
-    setVisible(true)
-
-    return () => {
-      clearTimeout(visibilityTimeout)
-    }
-  }, [texture])
-
-  useEffect(() => {
-    const options = {
+    const textures = {
       dirt,
       grass,
       glass,
       wood,
       log
     }
-
-    const selectedTexture = Object
-      .entries(options)
-      .find(([texture, isEnabled]) => isEnabled)
-
-    if (selectedTexture) {
-      const [textureName] = selectedTexture
-      setTexture(textureName)
+    
+    const pressedTexture = Object
+      .entries(textures)
+      .find(([k, v]) => v)
+    
+    if (pressedTexture) {
+      setTexture(pressedTexture[0])
     }
+    
+  }, [setTexture, dirt, grass, glass, wood, log])
+  
+  useEffect(() => {
+    const visibilityTimeout = setTimeout(() => {
+      setVisible(true)
+    }, 1000)
 
-  }, [dirt, grass, glass, wood, log])
+    setVisible(true)
 
-  return (
+    return () => {
+      clearTimeout(visibilityTimeout)
+    }
+  }, [activeTexture])
+
+  return visible && (
     <div className='texture-selector'>
-      {
-        Object
-          .entries(images)
-          .map(([imgKey, img]) => {
-            return (
-              <img 
-                className={texture === imgKey.replace('Img', '') ? 'selected' : ''}
-                key={imgKey}
-                src={img}
-                alt={imgKey}
-              />
-            )
-          })
-      }
+      {Object.entries(images).map(([k, src]) => {
+        return (
+          <img 
+            className={`${k === activeTexture ? 'active' : ''}`}
+            key={k}
+            src={src}
+            alt={k}
+          />)
+      })}
     </div>
   )
 
